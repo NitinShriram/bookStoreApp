@@ -1,0 +1,11 @@
+yt - https://www.youtube.com/watch?v=7l5UgtWfnw0
+
+repo - https://github.com/LearnCodingOfficial/bookStoreApp
+
+font - google fonts
+
+css - tailwind -> daisyui
+
+image - freepik
+
+react slick - https://react-slick.neostack.com/
