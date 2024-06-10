@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function Login() {
   const {
@@ -8,7 +10,33 @@ function Login() {
     register,
     formState: { errors },
   } = useForm();
-  const onSubmit = (values) => console.log(values);
+  const onSubmit =async (data) => {
+    const userInfo = {
+      email : data.email,
+      password : data.password
+    }
+    await axios.post("http://localhost:4001/user/login",userInfo)
+    .then((res)=>{
+      console.log(res.data)
+      if(res.data){
+        toast.success("Login Successful")
+        document.getElementById("my_modal_3").close()
+        setTimeout(()=>{
+          window.location.reload()
+          localStorage.setItem("Users",JSON.stringify(res.data.user))
+        },1000)
+        
+      }
+      localStorage.setItem("Users",JSON.stringify(res.data.user))
+    }).catch((error) =>{
+     if(error.response){
+        console.log(error)
+        toast.error(error.response.data.message)
+        setTimeout(()=>{},3000)
+     }
+      
+    })
+  }
 
   // Create a ref for the dialog
   const dialogRef = useRef(null);

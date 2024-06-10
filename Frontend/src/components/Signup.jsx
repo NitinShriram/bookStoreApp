@@ -1,14 +1,44 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function Signup() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const from = location.state?.from?.pathname || "/"
+
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
-  const onSubmit = (values) => console.log(values);
+  const onSubmit = async (data) =>{
+    const userInfo = {
+      fullname : data.fullname,
+      email : data.email,
+      password : data.password
+    }
+    await axios.post("http://localhost:4001/user/signup",userInfo)
+    .then((res)=>{
+      console.log(res.data)
+      if(res.data){
+        toast.success("Signup Successful");
+        navigate(from,{replace : true})
+        setTimeout(()=>{
+          window.location.reload()
+        },1500)
+      }
+      localStorage.setItem("Users",JSON.stringify(res.data.user))
+    }).catch((error) =>{
+     if(error.response){
+        console.log(error)
+        toast.error(error.response.data.message)
+     }
+      
+    })
+  };
 
   return (
     <>
@@ -36,9 +66,9 @@ function Signup() {
                   type="text"
                   placeholder="Enter your Fullname"
                   className="w-80 px-3 py-1 border rounded-md outline-none bg-transparent dark:bg-stone-950 dark:text-white"
-                  {...register("name", { required: "This field is required" })}
+                  {...register("fullname", { required: "This field is required" })}
                 />
-                {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+                {errors.fullname && <p className="text-sm text-red-500">{errors.fullname.message}</p>}
               </div>
               {/* EMAIL */}
               <div className="mt-4 space-y-2 ">
